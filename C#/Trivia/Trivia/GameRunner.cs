@@ -9,22 +9,25 @@ namespace Trivia
 {
     public class GameRunner
     {
-
-        private static bool notAWinner;
-
         public static void Main(String[] args)
         {
+            PlayGame();
+        }
+
+        public static void PlayGame()
+        {
+            var notAWinner = false;
             Game aGame = new Game();
 
             aGame.add("Chet");
             aGame.add("Pat");
             aGame.add("Sue");
 
-            Random rand = new Random();
+            // Set a specific seed
+            Random rand = new Random(1);
 
             do
             {
-
                 aGame.roll(rand.Next(5) + 1);
 
                 if (rand.Next(9) == 7)
@@ -35,14 +38,9 @@ namespace Trivia
                 {
                     notAWinner = aGame.wasCorrectlyAnswered();
                 }
-
-
-
-            } while (notAWinner);
-
+            }
+            while (notAWinner);
         }
-
-
     }
 
 }
