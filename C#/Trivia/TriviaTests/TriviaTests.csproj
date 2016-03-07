@@ -60,6 +60,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Reference1PlayerGame.log">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="ReferenceGame.log">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
