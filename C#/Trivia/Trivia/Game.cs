@@ -52,11 +52,10 @@ namespace Trivia
         }
 
         /// <summary>
-        /// Adds the specified player name.
+        /// Adds the player.
         /// </summary>
         /// <param name="playerName">Name of the player.</param>
-        /// <returns></returns>
-        public bool add(string playerName)
+        public void AddPlayer(string playerName)
         {
             players.Add(playerName);
             places[players.Count] = 0;
@@ -65,15 +64,14 @@ namespace Trivia
 
             Console.WriteLine(playerName + " was added");
             Console.WriteLine("They are player number " + players.Count);
-            return true;
         }
 
         /// <summary>
-        /// Rolls the specified dice.
+        /// Rolls the dice.
         /// </summary>
         /// <param name="dice">The dice.</param>
         /// <param name="luckyNumber">The lucky number.</param>
-        public bool rollTheDice(int dice, int luckyNumber)
+        public bool RollTheDice(int dice, int luckyNumber)
         {
             var winner = false;
             Console.WriteLine(players[currentPlayer] + " is the current player");
@@ -84,7 +82,7 @@ namespace Trivia
                 if (dice % 2 != 0)
                 {
                     Console.WriteLine(players[currentPlayer] + " is getting out of the penalty box");
-                    winner = this.processDice(dice, luckyNumber);
+                    winner = this.ProcessDice(dice, luckyNumber);
                 }
                 else
                 {
@@ -93,86 +91,83 @@ namespace Trivia
             }
             else
             {
-                winner = this.processDice(dice, luckyNumber);
+                winner = this.ProcessDice(dice, luckyNumber);
             }
           
             return winner;
         }
 
+
         /// <summary>
-        /// Processes the lucky number.
+        /// Processes the answer.
         /// </summary>
         /// <param name="luckyNumber">The lucky number.</param>
-        /// <returns></returns>
-        private bool processAnswer(int luckyNumber)
+        private void ProcessAnswer(int luckyNumber)
         {
-            var winner = false;
-
             if (luckyNumber == MagicalNumber)
             {
-                this.wrongAnswer();
+                this.ProcessWrongAnswers();
             }
             else
             {
-                winner = this.wasCorrectlyAnswered();
+                this.ProcessCorrectAnswers();
             }
-            return winner;
         }
-
 
         /// <summary>
         /// Processes the dice.
         /// </summary>
         /// <param name="roll">The roll.</param>
         /// <param name="luckyNumber">The lucky number.</param>
-        /// <returns></returns>
-        private bool processDice(int roll, int luckyNumber)
+        /// <returns>Returns true if the player won the game, false otherwise</returns>
+        private bool ProcessDice(int roll, int luckyNumber)
         {
             places[currentPlayer] = places[currentPlayer] + roll;
             if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
 
             Console.WriteLine(players[currentPlayer] + "'s new location is " + places[currentPlayer]);
-            Console.WriteLine("The category is " + currentCategory());
+            Console.WriteLine("The category is " + CurrentCategory());
             
-            return askQuestion(luckyNumber); 
+            AskQuestion(luckyNumber);
+
+            return PlayerWon();
         }
 
         /// <summary>
         /// Asks the question.
         /// </summary>
         /// <param name="luckyNumber">The lucky number.</param>
-        /// <returns>Returns true if the answer was correct, false otherwise</returns>
-        private bool askQuestion(int luckyNumber)
+        private void AskQuestion(int luckyNumber)
         {
-            if (currentCategory() == Category.Pop)
+            if (CurrentCategory() == Category.Pop)
             {
                 Console.WriteLine(popQuestions.First());
                 popQuestions.RemoveAt(0);
             }
-            if (currentCategory() == Category.Science)
+            if (CurrentCategory() == Category.Science)
             {
                 Console.WriteLine(scienceQuestions.First());
                 scienceQuestions.RemoveAt(0);
             }
-            if (currentCategory() == Category.Sports)
+            if (CurrentCategory() == Category.Sports)
             {
                 Console.WriteLine(sportsQuestions.First());
                 sportsQuestions.RemoveAt(0);
             }
-            if (currentCategory() == Category.Rock)
+            if (CurrentCategory() == Category.Rock)
             {
                 Console.WriteLine(rockQuestions.First());
                 rockQuestions.RemoveAt(0);
             }
 
-            return this.processAnswer(luckyNumber);
+            this.ProcessAnswer(luckyNumber);
         }
 
         /// <summary>
-        /// Currents the category.
+        /// Retrieves the current category.
         /// </summary>
-        /// <returns></returns>
-        private Category currentCategory()
+        /// <returns>Returns the category</returns>
+        private Category CurrentCategory()
         {
             Category category = Category.Unknown;
 
@@ -202,7 +197,7 @@ namespace Trivia
         /// <summary>
         /// Performs the change of player.
         /// </summary>
-        public void nextPlayer()
+        public void NextPlayer()
         {
             currentPlayer++;
             if (currentPlayer == players.Count)
@@ -211,31 +206,26 @@ namespace Trivia
             }
         }
 
+
         /// <summary>
-        /// Check whether the correctly answered.
+        /// Processes the correct answers.
         /// </summary>
         /// <returns></returns>
-        private bool wasCorrectlyAnswered()
+        private void ProcessCorrectAnswers()
         {
-            var winner = false;
-            
             if (!inPenaltyBox[currentPlayer])
             {
                 Console.WriteLine("Answer was correct!!!!");
                 purses[currentPlayer]++;
                 Console.WriteLine(players[currentPlayer]+" now has "+ purses[currentPlayer]+ " Gold Coins.");
-
-                winner = didPlayerWin();
             }
-
-            return winner;
         }
 
+
         /// <summary>
-        /// Wrongs the answer.
+        /// Processes the wrong answers.
         /// </summary>
-        /// <returns></returns>
-        private void wrongAnswer()
+        private void ProcessWrongAnswers()
         {
             Console.WriteLine("Question was incorrectly answered");
             Console.WriteLine(players[currentPlayer] + " was sent to the penalty box");
@@ -243,10 +233,10 @@ namespace Trivia
         }
 
         /// <summary>
-        /// Dids the player win.
+        /// Players the won.
         /// </summary>
-        /// <returns></returns>
-        private bool didPlayerWin()
+        /// <returns>True if the player won, false otherwise.</returns>
+        private bool PlayerWon()
         {
             return purses[currentPlayer] == 6;
         }

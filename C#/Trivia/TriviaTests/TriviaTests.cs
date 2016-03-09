@@ -34,16 +34,16 @@ namespace TriviaTests
         {
             Game game = new Game();
 
-            game.add("Albert");
+            game.AddPlayer("Albert");
 
-            game.rollTheDice(4, 7);
-            game.nextPlayer();
+            game.RollTheDice(4, 7);
+            game.NextPlayer();
 
-            game.rollTheDice(2, 3);
-            game.nextPlayer();
+            game.RollTheDice(2, 3);
+            game.NextPlayer();
 
-            game.rollTheDice(1, 2);
-            game.nextPlayer();
+            game.RollTheDice(1, 2);
+            game.NextPlayer();
         }
 
         private void PlayGameSaveLogs(string fileName, List<string> players)
