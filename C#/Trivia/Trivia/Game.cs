@@ -30,25 +30,17 @@ namespace Trivia
 
         bool[] inPenaltyBox = new bool[MaxPlayers];
 
-        List<string> popQuestions = new List<string>();
-        List<string> scienceQuestions = new List<string>();
-        List<string> sportsQuestions = new List<string>();
-        List<string> rockQuestions = new List<string>();
-
         int currentPlayer = 0;
+
+        private QuestionHandler questionHandler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class.
         /// </summary>
         public Game()
         {
-            for (int i = 0; i < 50; i++)
-            {
-                popQuestions.Add("Pop Question " + i);
-                scienceQuestions.Add("Science Question " + i);
-                sportsQuestions.Add("Sports Question " + i);
-                rockQuestions.Add("Rock Question " + i);
-            }
+            questionHandler = new QuestionHandler();
+            questionHandler.GenerateQuestions();  
         }
 
         /// <summary>
@@ -126,72 +118,12 @@ namespace Trivia
             if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
 
             Console.WriteLine(players[currentPlayer] + "'s new location is " + places[currentPlayer]);
-            Console.WriteLine("The category is " + CurrentCategory());
-            
-            AskQuestion(luckyNumber);
+
+            questionHandler.AskQuestion(places[currentPlayer]);
+           
+            this.ProcessAnswer(luckyNumber);
 
             return PlayerWon();
-        }
-
-        /// <summary>
-        /// Asks the question.
-        /// </summary>
-        /// <param name="luckyNumber">The lucky number.</param>
-        private void AskQuestion(int luckyNumber)
-        {
-            if (CurrentCategory() == Category.Pop)
-            {
-                Console.WriteLine(popQuestions.First());
-                popQuestions.RemoveAt(0);
-            }
-            if (CurrentCategory() == Category.Science)
-            {
-                Console.WriteLine(scienceQuestions.First());
-                scienceQuestions.RemoveAt(0);
-            }
-            if (CurrentCategory() == Category.Sports)
-            {
-                Console.WriteLine(sportsQuestions.First());
-                sportsQuestions.RemoveAt(0);
-            }
-            if (CurrentCategory() == Category.Rock)
-            {
-                Console.WriteLine(rockQuestions.First());
-                rockQuestions.RemoveAt(0);
-            }
-
-            this.ProcessAnswer(luckyNumber);
-        }
-
-        /// <summary>
-        /// Retrieves the current category.
-        /// </summary>
-        /// <returns>Returns the category</returns>
-        private Category CurrentCategory()
-        {
-            Category category = Category.Unknown;
-
-            if ((places[currentPlayer] == 0) || (places[currentPlayer] == 4) || (places[currentPlayer] == 8))
-            {
-                category = Category.Pop;
-            }
-
-            if ((places[currentPlayer] == 1) || (places[currentPlayer] == 5) || (places[currentPlayer] == 9))
-            {
-                category = Category.Science;
-            }
-
-            if ((places[currentPlayer] == 2) || (places[currentPlayer] == 6) || (places[currentPlayer] == 10))
-            {
-                category = Category.Sports;
-            }
-
-            if (category == Category.Unknown)
-            {
-                category = Category.Rock;
-            }
-
-            return category;
         }
 
         /// <summary>
@@ -206,7 +138,6 @@ namespace Trivia
             }
         }
 
-
         /// <summary>
         /// Processes the correct answers.
         /// </summary>
@@ -220,7 +151,6 @@ namespace Trivia
                 Console.WriteLine(players[currentPlayer]+" now has "+ purses[currentPlayer]+ " Gold Coins.");
             }
         }
-
 
         /// <summary>
         /// Processes the wrong answers.
