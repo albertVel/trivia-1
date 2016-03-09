@@ -37,10 +37,13 @@ namespace TriviaTests
             game.add("Albert");
 
             game.rollTheDice(4, 7);
+            game.nextPlayer();
 
             game.rollTheDice(2, 3);
+            game.nextPlayer();
 
             game.rollTheDice(1, 2);
+            game.nextPlayer();
         }
 
         private void PlayGameSaveLogs(string fileName, List<string> players)

@@ -42,8 +42,13 @@ namespace Trivia
                 var luckyNumber = rand.Next(9);
 
                 winner = game.rollTheDice(dice, luckyNumber);
+
+                if (!winner)
+                {
+                    game.nextPlayer();
+                }
             }
-            while (winner);
+            while (!winner);
         }
     }
 
