@@ -36,19 +36,21 @@ namespace Trivia
             // Set a specific seed
             Random rand = new Random(1);
 
+            PlayerStatus playerStatus = null;
+
             do
             {
                 var dice = rand.Next(5) + 1;
                 var luckyNumber = rand.Next(9);
 
-                winner = game.RollTheDice(dice, luckyNumber);
+                playerStatus = game.RollTheDice(dice, luckyNumber);
 
-                if (!winner)
+                if (!playerStatus.won)
                 {
                     game.NextPlayer();
                 }
             }
-            while (!winner);
+            while (!playerStatus.won);
         }
     }
 

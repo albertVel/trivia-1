@@ -39,7 +39,7 @@ namespace Trivia
         public Game()
         {
             questionHandler = new QuestionHandler();
-            questionHandler.GenerateQuestions();  
+            questionHandler.GenerateQuestions();
         }
 
         /// <summary>
@@ -62,18 +62,23 @@ namespace Trivia
         /// </summary>
         /// <param name="dice">The dice.</param>
         /// <param name="luckyNumber">The lucky number.</param>
-        public bool RollTheDice(int dice, int luckyNumber)
+        public PlayerStatus RollTheDice(int dice, int luckyNumber)
         {
-            var winner = false;
+            PlayerStatus playerStatus = new PlayerStatus();
+
+
+            var correctAnswer = false;
             Console.WriteLine(players[currentPlayer] + " is the current player");
             Console.WriteLine("They have rolled a " + dice);
+
+            playerStatus.name = players[currentPlayer];
 
             if (inPenaltyBox[currentPlayer])
             {
                 if (dice % 2 != 0)
                 {
                     Console.WriteLine(players[currentPlayer] + " is getting out of the penalty box");
-                    winner = this.ProcessDice(dice, luckyNumber);
+                    correctAnswer = this.ProcessDice(dice, luckyNumber);
                 }
                 else
                 {
@@ -82,10 +87,18 @@ namespace Trivia
             }
             else
             {
-                winner = this.ProcessDice(dice, luckyNumber);
+                correctAnswer = this.ProcessDice(dice, luckyNumber);
             }
-          
-            return winner;
+
+
+            playerStatus.correctAnswer = correctAnswer;
+
+            playerStatus.inPenaltyBox = inPenaltyBox[currentPlayer];
+
+            playerStatus.won = PlayerWon();
+
+
+            return playerStatus;
         }
 
 
@@ -93,16 +106,23 @@ namespace Trivia
         /// Processes the answer.
         /// </summary>
         /// <param name="luckyNumber">The lucky number.</param>
-        private void ProcessAnswer(int luckyNumber)
+        /// <returns>Returns true if the answer was correct, false otherwise</returns>
+        private bool ProcessAnswer(int luckyNumber)
         {
+            var correctAnswer = false;
             if (luckyNumber == MagicalNumber)
             {
                 this.ProcessWrongAnswers();
             }
             else
             {
+
                 this.ProcessCorrectAnswers();
+                correctAnswer = true;
+
             }
+
+            return correctAnswer;
         }
 
         /// <summary>
@@ -110,7 +130,7 @@ namespace Trivia
         /// </summary>
         /// <param name="roll">The roll.</param>
         /// <param name="luckyNumber">The lucky number.</param>
-        /// <returns>Returns true if the player won the game, false otherwise</returns>
+        /// <returns>Returns true if the answer was correct, false otherwise</returns>
         private bool ProcessDice(int roll, int luckyNumber)
         {
             places[currentPlayer] = places[currentPlayer] + roll;
@@ -119,10 +139,8 @@ namespace Trivia
             Console.WriteLine(players[currentPlayer] + "'s new location is " + places[currentPlayer]);
 
             questionHandler.AskQuestion();
-           
-            this.ProcessAnswer(luckyNumber);
 
-            return PlayerWon();
+            return this.ProcessAnswer(luckyNumber);
         }
 
         /// <summary>
@@ -143,12 +161,12 @@ namespace Trivia
         /// <returns></returns>
         private void ProcessCorrectAnswers()
         {
-            if (!inPenaltyBox[currentPlayer])
-            {
-                Console.WriteLine("Answer was correct!!!!");
-                purses[currentPlayer]++;
-                Console.WriteLine(players[currentPlayer]+" now has "+ purses[currentPlayer]+ " Gold Coins.");
-            }
+            Console.WriteLine("Answer was correct!!!!");
+            purses[currentPlayer]++;
+            Console.WriteLine(players[currentPlayer] + " now has " + purses[currentPlayer] + " Gold Coins.");
+            inPenaltyBox[currentPlayer] = false;
+
+
         }
 
         /// <summary>
