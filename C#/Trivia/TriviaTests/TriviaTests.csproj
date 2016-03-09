@@ -59,14 +59,6 @@
       <Name>Trivia</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Reference1PlayerGame.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="ReferenceGame.log">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
