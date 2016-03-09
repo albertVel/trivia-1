@@ -11,7 +11,6 @@ namespace Trivia
     /// </summary>
     internal enum Category
     {
-        Unknown,
         Pop,
         Science,
         Sports,
@@ -119,7 +118,7 @@ namespace Trivia
 
             Console.WriteLine(players[currentPlayer] + "'s new location is " + places[currentPlayer]);
 
-            questionHandler.AskQuestion(places[currentPlayer]);
+            questionHandler.AskQuestion();
            
             this.ProcessAnswer(luckyNumber);
 

@@ -12,12 +12,16 @@ namespace Trivia
         List<string> sportsQuestions;
         List<string> rockQuestions;
 
+        private Random rand;
+
         public QuestionHandler()
         {
             popQuestions= new List<string>();
             scienceQuestions = new List<string>();
             sportsQuestions = new List<string>();
             rockQuestions = new List<string>();
+            rand = new Random(3);
+
         }
 
         internal void GenerateQuestions()
@@ -31,9 +35,9 @@ namespace Trivia
             }
         }
 
-        internal void AskQuestion(int placeCurrentPlayer)
+        internal void AskQuestion()
         {
-            var currentCategory = this.CurrentCategory(placeCurrentPlayer);
+            var currentCategory = this.CurrentCategory();
 
             if (currentCategory == Category.Pop)
             {
@@ -57,30 +61,12 @@ namespace Trivia
             }
         }
 
-        internal Category CurrentCategory(int placeCurrentPlayer)
+        internal Category CurrentCategory()
         {
-            
-            Category category = Category.Unknown;
+            // Set a specific seed
+            var luckyNumber = rand.Next(1000);
 
-            if ((placeCurrentPlayer == 0) || (placeCurrentPlayer == 4) || (placeCurrentPlayer == 8))
-            {
-                category = Category.Pop;
-            }
-
-            if ((placeCurrentPlayer == 1) || (placeCurrentPlayer == 5) || (placeCurrentPlayer == 9))
-            {
-                category = Category.Science;
-            }
-
-            if ((placeCurrentPlayer == 2) || (placeCurrentPlayer == 6) || (placeCurrentPlayer == 10))
-            {
-                category = Category.Sports;
-            }
-
-            if (category == Category.Unknown)
-            {
-                category = Category.Rock;
-            }
+            Category category = (Category)(luckyNumber%3);
 
             Console.WriteLine("The category is " + category);
 
