@@ -23,6 +23,7 @@ namespace Trivia
             purses = new int[MaxPlayers];
             inPenaltyBox = new bool[MaxPlayers];
             currentPlayer = 0;
+            this.GameData = new List<PlayerStatus>();
 
         }
 
@@ -32,10 +33,13 @@ namespace Trivia
             places[players.Count] = 0;
             purses[players.Count] = 0;
             inPenaltyBox[players.Count] = false;
+            
 
             Console.WriteLine(playerName + " was added");
-            Console.WriteLine("They are player number " + players.Count);
+            Console.WriteLine(playerName + " is the player " + players.Count);
         }
+
+        public List<PlayerStatus> GameData { get; private set; }
 
         internal string PlayerName
         {
@@ -116,10 +120,20 @@ namespace Trivia
                 playerStatus.correctAnswer = this.correctAnswer;
                 playerStatus.inPenaltyBox = this.InPenaltyBox;
                 playerStatus.won = this.PlayerWon;
+                playerStatus.pursues = this.PlayerPursues;
+                playerStatus.dice = this.dice;
+                
                 return playerStatus;
             }
         }
 
         public bool correctAnswer { get; set; }
+
+        internal void StorePlayerStatus()
+        {
+            GameData.Add(this.PlayerStatus);
+        }
+
+        public int dice { get; set; }
     }
 }

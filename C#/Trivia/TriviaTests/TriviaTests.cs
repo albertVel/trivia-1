@@ -70,11 +70,15 @@ namespace TriviaTests
                 game.NextPlayer();
                 CompareActualPlayerStatusWithExpectedOne(playerStatus, correctAnswer: true, inPenaltyBox: false, won: false, name: "Alf");
 
+                game.ShowGameData();
+
+
             }
 
             //Correct answer wins
             playerStatus = game.RollTheDice(4, 3);
             CompareActualPlayerStatusWithExpectedOne(playerStatus, correctAnswer: true, inPenaltyBox: false, won: true, name: "Alf");
+
 
         }
 

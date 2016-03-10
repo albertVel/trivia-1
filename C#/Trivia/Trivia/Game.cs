@@ -26,6 +26,21 @@ namespace Trivia
 
         private bool diceHaveBeenRolled = false;
 
+
+        public void ShowGameData()
+        {
+            Console.WriteLine("--- This is the actual Game Data ---");
+            foreach (var playerTurn in gameHandler.GameData)
+            {
+                
+
+                Console.WriteLine("Player {0} rolled a {1} and the answer was {2}, has {3} coins", playerTurn.name, playerTurn.dice,playerTurn.correctAnswerString, playerTurn.pursues);
+            }
+
+            Console.WriteLine("--- End of Game Data ---");
+
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class.
         /// </summary>
@@ -52,11 +67,13 @@ namespace Trivia
         /// <param name="luckyNumber">The lucky number.</param>
         public PlayerStatus RollTheDice(int dice, int luckyNumber)
         {
+            gameHandler.dice = dice;
+
             diceHaveBeenRolled = true;
             this.CheckPreconditionsBeforeRollingTheDice("The game can't start without players");
 
             Console.WriteLine(gameHandler.PlayerName + " is the current player");
-            Console.WriteLine("They have rolled a " + dice);
+            Console.WriteLine(gameHandler.PlayerName +" rolled a " + dice);
 
             if (gameHandler.InPenaltyBox)
             {
@@ -74,6 +91,8 @@ namespace Trivia
             {
                 gameHandler.correctAnswer = this.ProcessDice(dice, luckyNumber);
             }
+
+            gameHandler.StorePlayerStatus();
 
             return gameHandler.PlayerStatus;
         }
