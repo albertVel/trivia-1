@@ -101,6 +101,34 @@ namespace TriviaTests
 
         }
 
+        [ExpectedException(typeof(Exception))]
+        [TestMethod]
+        public void RollTheDiceNoPlayersRaiseException()
+        {
+            Game game = new Game();
+
+            game.RollTheDice(4, 7);
+        }
+
+        [ExpectedException(typeof(Exception))]
+        [TestMethod]
+        public void NextPlayerNoPlayersRaiseException()
+        {
+            Game game = new Game();
+
+            game.NextPlayer();
+        }
+
+        [ExpectedException(typeof(Exception))]
+        [TestMethod]
+        public void NextPlayerWithoutRollingDiceRaiseException()
+        {
+            Game game = new Game();
+            game.AddPlayer("Alf");
+
+            game.NextPlayer();
+        }
+
         /// <summary>
         /// Compares the actual player status with expected one.
         /// </summary>

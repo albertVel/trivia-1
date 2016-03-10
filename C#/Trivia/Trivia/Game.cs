@@ -19,19 +19,12 @@ namespace Trivia
 
     public class Game
     {
-        const int MaxPlayers = 6;
-        const int MagicalNumber = 7;
-
-        List<string> players = new List<string>();
-
-        int[] places = new int[MaxPlayers];
-        int[] purses = new int[MaxPlayers];
-
-        bool[] inPenaltyBox = new bool[MaxPlayers];
-
-        int currentPlayer = 0;
-
+        
         private QuestionHandler questionHandler;
+
+        private GameHandler gameHandler;
+
+        private bool diceHaveBeenRolled = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Game"/> class.
@@ -40,6 +33,7 @@ namespace Trivia
         {
             questionHandler = new QuestionHandler();
             questionHandler.GenerateQuestions();
+            gameHandler = new GameHandler();
         }
 
         /// <summary>
@@ -48,13 +42,7 @@ namespace Trivia
         /// <param name="playerName">Name of the player.</param>
         public void AddPlayer(string playerName)
         {
-            players.Add(playerName);
-            places[players.Count] = 0;
-            purses[players.Count] = 0;
-            inPenaltyBox[players.Count] = false;
-
-            Console.WriteLine(playerName + " was added");
-            Console.WriteLine("They are player number " + players.Count);
+            gameHandler.AddPlayer(playerName);   
         }
 
         /// <summary>
@@ -64,43 +52,53 @@ namespace Trivia
         /// <param name="luckyNumber">The lucky number.</param>
         public PlayerStatus RollTheDice(int dice, int luckyNumber)
         {
-            PlayerStatus playerStatus = new PlayerStatus();
+            diceHaveBeenRolled = true;
+            this.CheckPreconditionsBeforeRollingTheDice("The game can't start without players");
 
-
-            var correctAnswer = false;
-            Console.WriteLine(players[currentPlayer] + " is the current player");
+            Console.WriteLine(gameHandler.PlayerName + " is the current player");
             Console.WriteLine("They have rolled a " + dice);
 
-            playerStatus.name = players[currentPlayer];
-
-            if (inPenaltyBox[currentPlayer])
+            if (gameHandler.InPenaltyBox)
             {
                 if (dice % 2 != 0)
                 {
-                    Console.WriteLine(players[currentPlayer] + " is getting out of the penalty box");
-                    correctAnswer = this.ProcessDice(dice, luckyNumber);
+                    Console.WriteLine(gameHandler.PlayerName + " is getting out of the penalty box");
+                    gameHandler.correctAnswer = this.ProcessDice(dice, luckyNumber);
                 }
                 else
                 {
-                    Console.WriteLine(players[currentPlayer] + " is not getting out of the penalty box");
+                    Console.WriteLine(gameHandler.PlayerName + " is not getting out of the penalty box");
                 }
             }
             else
             {
-                correctAnswer = this.ProcessDice(dice, luckyNumber);
+                gameHandler.correctAnswer = this.ProcessDice(dice, luckyNumber);
             }
 
-
-            playerStatus.correctAnswer = correctAnswer;
-
-            playerStatus.inPenaltyBox = inPenaltyBox[currentPlayer];
-
-            playerStatus.won = PlayerWon();
-
-
-            return playerStatus;
+            return gameHandler.PlayerStatus;
         }
 
+        private void CheckPreconditionsBeforeRollingTheDice(string exceptionMessage)
+        {
+            if (gameHandler.NumberOfPlayers == 0)
+            {
+                throw new Exception(exceptionMessage);
+            }
+        }
+
+        private void CheckPreconditionsBeforeNextPlayer(string exceptionMessageNoPlayers, string exceptionMessageNotRolledDice)
+        {
+            if (gameHandler.NumberOfPlayers == 0)
+            {
+                throw new Exception(exceptionMessageNoPlayers);
+            }
+
+            if (!this.diceHaveBeenRolled)
+            {
+                throw new Exception(exceptionMessageNotRolledDice);
+
+            }
+        }
 
         /// <summary>
         /// Processes the answer.
@@ -110,7 +108,7 @@ namespace Trivia
         private bool ProcessAnswer(int luckyNumber)
         {
             var correctAnswer = false;
-            if (luckyNumber == MagicalNumber)
+            if (luckyNumber == gameHandler.MagicalNumber)
             {
                 this.ProcessWrongAnswers();
             }
@@ -133,10 +131,9 @@ namespace Trivia
         /// <returns>Returns true if the answer was correct, false otherwise</returns>
         private bool ProcessDice(int roll, int luckyNumber)
         {
-            places[currentPlayer] = places[currentPlayer] + roll;
-            if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
-
-            Console.WriteLine(players[currentPlayer] + "'s new location is " + places[currentPlayer]);
+            gameHandler.MovePlayer(roll);
+            
+            Console.WriteLine(gameHandler.PlayerName + "'s new location is " + gameHandler.PlayerPosition);
 
             questionHandler.AskQuestion();
 
@@ -148,11 +145,8 @@ namespace Trivia
         /// </summary>
         public void NextPlayer()
         {
-            currentPlayer++;
-            if (currentPlayer == players.Count)
-            {
-                currentPlayer = 0;
-            }
+            this.CheckPreconditionsBeforeNextPlayer("There are no players.","The dice should have rolled before switching players");
+            gameHandler.NextPlayer();     
         }
 
         /// <summary>
@@ -162,10 +156,11 @@ namespace Trivia
         private void ProcessCorrectAnswers()
         {
             Console.WriteLine("Answer was correct!!!!");
-            purses[currentPlayer]++;
-            Console.WriteLine(players[currentPlayer] + " now has " + purses[currentPlayer] + " Gold Coins.");
-            inPenaltyBox[currentPlayer] = false;
 
+            gameHandler.IncreasePursues();
+            Console.WriteLine(gameHandler.PlayerName + " now has " + gameHandler.PlayerPursues + " Gold Coins.");
+
+            gameHandler.InPenaltyBox = false;
 
         }
 
@@ -175,8 +170,8 @@ namespace Trivia
         private void ProcessWrongAnswers()
         {
             Console.WriteLine("Question was incorrectly answered");
-            Console.WriteLine(players[currentPlayer] + " was sent to the penalty box");
-            inPenaltyBox[currentPlayer] = true;
+            Console.WriteLine(gameHandler.PlayerName + " was sent to the penalty box");
+            gameHandler.InPenaltyBox = true;
         }
 
         /// <summary>
@@ -185,7 +180,7 @@ namespace Trivia
         /// <returns>True if the player won, false otherwise.</returns>
         private bool PlayerWon()
         {
-            return purses[currentPlayer] == 6;
+            return gameHandler.PlayerWon;
         }
     }
 }
