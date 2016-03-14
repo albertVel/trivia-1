@@ -27,17 +27,25 @@ namespace Trivia
         private bool diceHaveBeenRolled = false;
 
 
-        public void ShowGameData()
+        public int ShowGameData()
         {
+            if (gameHandler.GameData.Count == 0)
+            {
+                throw new Exception("There's no game data to show.");
+            }
+
+
             Console.WriteLine("--- This is the actual Game Data ---");
             foreach (var playerTurn in gameHandler.GameData)
             {
                 
 
-                Console.WriteLine("Player {0} rolled a {1} and the answer was {2}, has {3} coins", playerTurn.name, playerTurn.dice,playerTurn.correctAnswerString, playerTurn.pursues);
+                Console.WriteLine("Player {0} rolled a {1} and the answer was {2}, has {3} coins and he/she {4}", playerTurn.name, playerTurn.dice, playerTurn.correctAnswerString, playerTurn.pursues, playerTurn.wonString);
             }
 
             Console.WriteLine("--- End of Game Data ---");
+
+            return gameHandler.GameData.Count;
 
         }
 
@@ -70,7 +78,7 @@ namespace Trivia
             gameHandler.dice = dice;
 
             diceHaveBeenRolled = true;
-            this.CheckPreconditionsBeforeRollingTheDice("The game can't start without players");
+            this.CheckPreconditionsBeforeRollingTheDice();
 
             Console.WriteLine(gameHandler.PlayerName + " is the current player");
             Console.WriteLine(gameHandler.PlayerName +" rolled a " + dice);
@@ -97,11 +105,11 @@ namespace Trivia
             return gameHandler.PlayerStatus;
         }
 
-        private void CheckPreconditionsBeforeRollingTheDice(string exceptionMessage)
+        private void CheckPreconditionsBeforeRollingTheDice()
         {
             if (gameHandler.NumberOfPlayers == 0)
             {
-                throw new Exception(exceptionMessage);
+                throw new Exception("The game can't start without players");
             }
         }
 
@@ -115,7 +123,11 @@ namespace Trivia
             if (!this.diceHaveBeenRolled)
             {
                 throw new Exception(exceptionMessageNotRolledDice);
+            }
 
+            if (gameHandler.OnePlayerWon)
+            {
+                throw new Exception("The game can't go on as we have already a winner!");
             }
         }
 
@@ -191,15 +203,6 @@ namespace Trivia
             Console.WriteLine("Question was incorrectly answered");
             Console.WriteLine(gameHandler.PlayerName + " was sent to the penalty box");
             gameHandler.InPenaltyBox = true;
-        }
-
-        /// <summary>
-        /// Players the won.
-        /// </summary>
-        /// <returns>True if the player won, false otherwise.</returns>
-        private bool PlayerWon()
-        {
-            return gameHandler.PlayerWon;
         }
     }
 }

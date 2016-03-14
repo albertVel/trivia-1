@@ -45,7 +45,6 @@ namespace Trivia
                 }
                 return text;
             }
-            set{}
         }
 
         public string name { get; set; }

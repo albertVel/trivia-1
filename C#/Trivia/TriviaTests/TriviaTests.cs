@@ -24,17 +24,20 @@ namespace TriviaTests
 
             //Wrong answer enters the penalty box
             playerStatus = game.RollTheDice(4, 7);
+            game.ShowGameData();
             CompareActualPlayerStatusWithExpectedOne(playerStatus, correctAnswer: false, inPenaltyBox: true, won: false, name: "Alf");
             game.NextPlayer();
 
             //In penalty box, and doesn't leave penalty box
             playerStatus = game.RollTheDice(2, 3);
             CompareActualPlayerStatusWithExpectedOne(playerStatus, correctAnswer: false, inPenaltyBox: true, won: false, name: "Alf");
+            game.ShowGameData();
             game.NextPlayer();
 
             //Leaves penalty box, answer correct
             playerStatus = game.RollTheDice(1, 2);
             CompareActualPlayerStatusWithExpectedOne(playerStatus, correctAnswer: true, inPenaltyBox: false, won: false, name: "Alf");
+            game.ShowGameData();
             game.NextPlayer();
 
         }
@@ -72,14 +75,84 @@ namespace TriviaTests
 
                 game.ShowGameData();
 
-
             }
 
             //Correct answer wins
             playerStatus = game.RollTheDice(4, 3);
             CompareActualPlayerStatusWithExpectedOne(playerStatus, correctAnswer: true, inPenaltyBox: false, won: true, name: "Alf");
 
+        }
 
+        [ExpectedException(typeof(Exception))]
+        [TestMethod]
+        public void WinKeepPlayingExceptionRaises()
+        {
+            Game game = new Game();
+
+            game.AddPlayer("Alf");
+            PlayerStatus playerStatus;
+
+            for (int i = 0; i < 6; i++)
+            {
+                game.RollTheDice(4, 3);
+                game.ShowGameData();
+                game.NextPlayer();
+
+            }
+
+        }
+
+        [TestMethod]
+        public void Answer100QuestioNoWins()
+        {
+            Game game = new Game();
+
+            game.AddPlayer("Alf");
+
+            for (int i = 0; i < 100; i++)
+            {
+                game.RollTheDice(4, 7);
+                game.NextPlayer();
+            }
+
+            game.ShowGameData();
+
+        }
+
+        [ExpectedException(typeof(Exception))]
+        [TestMethod]
+        public void NoPlayersShowGameDataExceptionRaises()
+        {
+            Game game = new Game();
+
+            game.ShowGameData();
+
+        }
+
+        [ExpectedException(typeof(Exception))]
+        [TestMethod]
+        public void SeveralPlayersNotRolledDiceShowGameDataExceptionRaises()
+        {
+            Game game = new Game();
+
+            game.AddPlayer("alf");
+            game.AddPlayer("federico");
+            game.AddPlayer("de los palotes");
+
+            game.ShowGameData();
+
+        }
+
+        [TestMethod]
+        public void RolledDiceOnceOneResultInShowGameData()
+        {
+            Game game = new Game();
+
+            game.AddPlayer("alf");
+
+            game.RollTheDice(4, 7);
+
+            Assert.AreEqual(1, game.ShowGameData());
         }
 
 

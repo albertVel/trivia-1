@@ -24,6 +24,7 @@ namespace Trivia
             inPenaltyBox = new bool[MaxPlayers];
             currentPlayer = 0;
             this.GameData = new List<PlayerStatus>();
+            this.OnePlayerWon = false;
 
         }
 
@@ -123,14 +124,21 @@ namespace Trivia
                 playerStatus.pursues = this.PlayerPursues;
                 playerStatus.dice = this.dice;
                 
+                
                 return playerStatus;
             }
         }
+
+        public bool OnePlayerWon { get; private set;}
 
         public bool correctAnswer { get; set; }
 
         internal void StorePlayerStatus()
         {
+            if (this.PlayerWon)
+            {
+                this.OnePlayerWon = true;
+            }
             GameData.Add(this.PlayerStatus);
         }
 

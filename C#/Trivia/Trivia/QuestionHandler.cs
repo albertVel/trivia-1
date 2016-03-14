@@ -20,7 +20,8 @@ namespace Trivia
             scienceQuestions = new List<string>();
             sportsQuestions = new List<string>();
             rockQuestions = new List<string>();
-            rand = new Random(3);
+            rand = new Random(1);
+
 
         }
 
@@ -63,8 +64,7 @@ namespace Trivia
 
         internal Category CurrentCategory()
         {
-            // Set a specific seed
-            var luckyNumber = rand.Next(1000);
+            var luckyNumber = rand.Next(5000);
 
             Category category = (Category)(luckyNumber%3);
 
