@@ -27,6 +27,11 @@ namespace Trivia
         private bool diceHaveBeenRolled = false;
 
 
+        /// <summary>
+        /// Shows the game data.
+        /// </summary>
+        /// <returns>The number of plays displayed.</returns>
+        /// <exception cref="Exception">There's no game data to show.</exception>
         public int ShowGameData()
         {
             if (gameHandler.GameData.Count == 0)
@@ -38,8 +43,7 @@ namespace Trivia
             Console.WriteLine("--- This is the actual Game Data ---");
             foreach (var playerTurn in gameHandler.GameData)
             {
-                
-
+                    
                 Console.WriteLine("Player {0} rolled a {1} and the answer was {2}, has {3} coins and he/she {4}", playerTurn.name, playerTurn.dice, playerTurn.correctAnswerString, playerTurn.pursues, playerTurn.wonString);
             }
 
@@ -68,11 +72,13 @@ namespace Trivia
             gameHandler.AddPlayer(playerName);   
         }
 
+
         /// <summary>
         /// Rolls the dice.
         /// </summary>
         /// <param name="dice">The dice.</param>
         /// <param name="luckyNumber">The lucky number.</param>
+        /// <returns>Returns the Status of the current play.</returns>
         public PlayerStatus RollTheDice(int dice, int luckyNumber)
         {
             gameHandler.dice = dice;
