@@ -30,6 +30,12 @@ namespace Trivia
 
         internal void AddPlayer(string playerName)
         {
+
+            if(players.Count == MaxPlayers-1)
+            {
+                throw new Exception("The maximum number of players have been reached");
+            }
+
             players.Add(playerName);
             places[players.Count] = 0;
             purses[players.Count] = 0;

@@ -206,6 +206,18 @@ namespace TriviaTests
             game.NextPlayer();
         }
 
+        [ExpectedException(typeof(Exception))]
+        [TestMethod]
+        public void Add7PlayersRaiseException()
+        {
+            Game game = new Game();
+
+            for (int i = 0; i < 7; i++)
+            {
+                game.AddPlayer("Player_" + i);
+            }
+        }
+
         /// <summary>
         /// Compares the actual player status with expected one.
         /// </summary>
